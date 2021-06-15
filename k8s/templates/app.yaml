@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "app.fullname" . }}
+  labels:
+    app: {{ template "app.fullname" . }}
+    chart: {{ template "app.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+    spec:
+      containers:
+      - name: {{ template "app.fullname" . }}
+        image: {{ .Values.app.image.name }}:{{ .Values.app.image.tag }}
+        imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        ports:
+          - name: {{ template "app.fullname" . }}
+            protocol: TCP
+            containerPort: 3000
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.app.service.port }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.app.service.port }}
+          timeoutSeconds: 10
+        resources:
+          requests:
+            memory: {{ .Values.app.resources.requests.memory }}
+            cpu: {{ .Values.app.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.app.resources.limits.memory }}
+            cpu: {{ .Values.app.resources.limits.cpu }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.app.secretName }}

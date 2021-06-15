@@ -1,0 +1,26 @@
+app:
+  image:
+    name: scratchpay-image
+    tag: latest
+    pullPolicy: Always
+  service:
+    name: app
+    port: 3000
+  resources:
+    requests:
+      cpu: 200m
+      memory: 500Mi
+    limits:
+      cpu: 500m
+      memory: 700Mi
+  secretName: scratchpay-secrets
+
+db:
+  image:
+    name: postgres
+    tag: 10.4
+    pullPolicy: IfNotPresent
+  service:
+    name: postgres
+    port: 5432
+  secretName: db-secrets

@@ -1,0 +1,9 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.db.service.name }}
+spec:
+  selector:
+    app.kubernetes.io/component: db
+  ports:
+    - port: {{ .Values.db.service.port }}
