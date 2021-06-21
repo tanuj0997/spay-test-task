@@ -1,4 +1,4 @@
-import { AbstractEntity } from 'common/abstract.entity';
+import { AbstractEntity } from '../../common/abstract.entity';
 import { Column, Entity } from 'typeorm';
 import { UserDto } from './dto/user-dto';
 
@@ -6,9 +6,6 @@ import { UserDto } from './dto/user-dto';
 export class UserEntity extends AbstractEntity<UserDto> {
     @Column({ nullable: true })
     name: string;
-
-    @Column({ nullable: true })
-    id: string;
 
     dtoClass = UserDto;
 }

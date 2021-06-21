@@ -1,3 +1,4 @@
+import "../polyfill";
 import {
   CreateDateColumn,
   PrimaryGeneratedColumn,
@@ -8,7 +9,7 @@ import { UtilsProvider } from '../providers/utils.provider';
 import type { AbstractDto } from './dto/abstract.dto';
 
 export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto> {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   id: string;
 
   @CreateDateColumn({

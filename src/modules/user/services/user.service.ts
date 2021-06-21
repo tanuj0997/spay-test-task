@@ -9,7 +9,7 @@ import { UserRegisterDto } from '../dto/UserRegisterDto';
 export class UserService {
   constructor(
     public readonly userRepository: UserRepository
-  ) {}
+  ) { }
 
   /**
    * Find single user
@@ -40,17 +40,27 @@ export class UserService {
     userRegisterDto: UserRegisterDto,
   ): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
-
     return this.userRepository.save(user);
   }
 
-  async getUser(userId: string): Promise<UserDto> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+  async getUser(userId: number): Promise<any> {
+    if (userId == 0) {
+      const queryBuilder = this.userRepository.createQueryBuilder('user');
+      const users = await queryBuilder.getMany();
+      const data = [];
+      for (const user of users){
+        data.push(user.toDto())
+      }
+      return data;
 
-    queryBuilder.where('user.id = :userId', { userId });
+    } else {
+      const queryBuilder = this.userRepository.createQueryBuilder('user');
 
-    const userEntity = await queryBuilder.getOne();
+      queryBuilder.where('user.id = :userId', { userId });
 
-    return userEntity.toDto();
+      const userEntity = await queryBuilder.getOne();
+
+      return userEntity.toDto();
+    }
   }
 }

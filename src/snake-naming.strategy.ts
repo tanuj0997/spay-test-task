@@ -37,7 +37,7 @@ export class SnakeNamingStrategy
     return snakeCase(
       firstTableName +
         '_' +
-        firstPropertyName.replace(/\./gi, '_') +
+        // firstPropertyName.replace(/\./gi, '_') +
         '_' +
         secondTableName,
     );

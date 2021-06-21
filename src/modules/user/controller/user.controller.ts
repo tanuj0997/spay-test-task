@@ -1,30 +1,17 @@
 import * as Boom from "@hapi/boom";
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UUIDParam } from "decorators/http.decorators";
 import { ValidationError } from "joi";
 import { UserDto } from "../dto/user-dto";
 import { UserService } from "../services/user.service";
+import { UserRegisterDto } from '../dto/UserRegisterDto';
 
 
 @Controller("users")
 @ApiTags("Users")
 export class UserController {
     constructor(private userService: UserService,) { }
-
-    @Get("/")
-    @ApiResponse({ status: HttpStatus.ACCEPTED, description: "Successful Login" })
-    @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
-    @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
-    public async login(@Body() credentials: any): Promise<any> {
-        return {
-            message: "Logged in Successfully!",
-            data: {
-                user: "user",
-                token: "token"
-            }
-        }
-    }
 
     @Post("/")
     @ApiResponse({
@@ -33,31 +20,27 @@ export class UserController {
     })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: "Bad Request" })
     @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: "Unauthorized" })
-    async register(@Body() payload: any): Promise<any> {
+    async register(@Body() payload: UserRegisterDto): Promise<any> {
+        await this.userService.createUser(payload);
         return {
-            message: "Logged in Successfully!",
+            message: "User Stored Successfully!",
             data: {
-                user: "user",
-                token: "token"
+                user: payload.name,
+                id: payload.id
             }
         }
     }
 
-    @Get(':id')
+    @Get('')
     @HttpCode(HttpStatus.OK)
     @ApiResponse({
         status: HttpStatus.OK,
         description: 'Get users list',
         type: UserDto,
     })
-    getUser(@UUIDParam('id') userId: string): Promise<UserDto> {
-        return this.userService.getUser(userId);
-    }
+    async getUser(@Query() userId: any): Promise<any> {
+        const data = await this.userService.getUser(userId.id || 0);
+        return { data }
 
-    @Get("health_check")
-    async healthCheck(): Promise<any> {
-        return {
-            message: "server is working"
-        };
     }
 }
