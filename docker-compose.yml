@@ -4,18 +4,24 @@ services:
     env_file:
       - .env
     container_name: scratchpay_test_task
+    # command: sh -c yarn console seed
     restart: always
     build: .
     ports:
       - "$PORT:$PORT"
     links:
       - postgres
+    networks:
+      - backend
+
   postgres:
     env_file:
       - .env
     image: postgres
     restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+networks:
+  backend:
+    driver: bridge
