@@ -1,8 +1,8 @@
 app:
   image:
-    name: scratchpay-image
+    name: scratch-pay-task
     tag: latest
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   service:
     name: app
     port: 3000
