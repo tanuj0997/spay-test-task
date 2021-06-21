@@ -75,7 +75,9 @@
 ```
 2. Setup configuration 
 
-> Setup all configuration files from **configurationFiles** folder, change .env according to needs.
+> Setup all configuration files from **configurationFiles** folder, change .env according to needs.  
+> Create Database as required and update the name of the database in the .env file.  
+> ```yarn console seed``` will seed the database using data.csv located at ```src/console/data.csv```
 
 3. Run at local
 
@@ -88,10 +90,18 @@
 
 4. To deploy helm charts on Kuberenetes cluster, run following command
 
-   > $NAMESPACE=any prefered namespace to deploy all resources in 
+- Build docker image first, run following command and push to registry
 
 ```sh
-     $ helm upgrade --install scratch-pay-task ./k8s -n ${NAMESPACE}
+    $ docker build -t scratch-pay-task . 
 
+```
+
+> Make sure your cluster is configured with image registry.
+
+  - Run following command to deploy it on cluster.
+
+```sh
+     $ helm upgrade --install scratch-pay-task ./k8s
 ```
 
